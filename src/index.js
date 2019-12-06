@@ -1,29 +1,48 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import ReactDOM from "react-dom";
 import * as serviceWorker from "./serviceWorker";
 
 // A Hook is a function that lets you tap in to a React feature  like state or lifecycle  method.
 
+// Reducer function is similar to the ones used on Redux
+
+const notesReducer = (state, action) => {
+  switch (action.type) {
+    case "POPULATE_NOTES":
+      return action.notes;
+    case "ADD_NOTE":
+      return [...state, action.note];
+    case "REMOVE_NOTE":
+      return state.filter(({ title }) => title !== action.title);
+    default:
+      return state;
+  }
+};
+
 const NoteApp = () => {
-  const [notes, setNotes] = useState([]);
+  // const [notes, setNotes] = useState([]);
+  const [notes, notesDispatch] = useReducer(notesReducer, []);
   const [title, setTitle] = useState("");
   const [noteBody, setNoteBody] = useState("");
 
   const addNote = e => {
     e.preventDefault();
-    setNotes([...notes, { title, noteBody }]);
+    // setNotes([...notes, { title, noteBody }]);
+    notesDispatch({ type: "ADD_NOTE", note: { title, noteBody } });
     setTitle("");
     setNoteBody("");
   };
 
   const removeNote = title => {
-    setNotes(notes.filter(note => note.title !== title));
+    // setNotes(notes.filter(note => note.title !== title));
+    notesDispatch({ type: "REMOVE_NOTE", title });
   };
 
   useEffect(() => {
-    const notesData = JSON.parse(localStorage.getItem("notes"));
-    if (notesData) {
-      setNotes(notesData);
+    const notes = JSON.parse(localStorage.getItem("notes"));
+    if (notes) {
+      notesDispatch({ type: "POPULATE_NOTES", notes });
+      // setNotes(notesData);
     }
   }, []);
 
