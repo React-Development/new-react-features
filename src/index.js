@@ -20,12 +20,11 @@ const NoteApp = () => {
     setNotes(notes.filter(note => note.title !== title));
   };
 
-  useEffect(()=> {
-    
-  const notesData = JSON.parse(localStorage.getItem("notes"));
-  if(notesData){
+  useEffect(() => {
+    const notesData = JSON.parse(localStorage.getItem("notes"));
+    if (notesData) {
       setNotes(notesData);
-  }
+    }
   }, []);
 
   useEffect(() => {
@@ -37,11 +36,7 @@ const NoteApp = () => {
     <div>
       <h1>Notes</h1>
       {notes.map(note => (
-        <div key={note.title}>
-          <h3>{note.title}</h3>
-          <p>{note.noteBody}</p>
-          <button onClick={() => removeNote(note.title)}>X</button>
-        </div>
+        <Note key={note.title} note={note} removeNote={removeNote} />
       ))}
       <p>Add Note:</p>
       <form onSubmit={addNote}>
@@ -63,7 +58,25 @@ const NoteApp = () => {
   );
 };
 
-const App = props => {
+const Note = ({ note, removeNote }) => {
+  // This one will be used as ComponentDidUnmount
+  useEffect(() => {
+    console.log("Setting up effect");
+    return () => {
+      console.log("Cleaning up effect!");
+    };
+  }, []);
+
+  return (
+    <div>
+      <h3>{note.title}</h3>
+      <p>{note.noteBody}</p>
+      <button onClick={() => removeNote(note.title)}>X</button>
+    </div>
+  );
+};
+
+/*const App = props => {
   const [count, setCount] = useState(props.count);
   const [text, setText] = useState("");
 
@@ -105,8 +118,9 @@ App.defaultProps = {
   count: 0
 };
 
-ReactDOM.render(<NoteApp />, document.getElementById("root"));
+*/
 
+ReactDOM.render(<NoteApp />, document.getElementById("root"));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
