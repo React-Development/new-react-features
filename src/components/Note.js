@@ -1,8 +1,14 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { NotesContext } from "../context/notes-context";
+import useMousePosition from "../hooks/useMousePosition";
 
 const Note = ({ note }) => {
   const { dispatch } = useContext(NotesContext);
+  const position = useMousePosition();
+
+  // Setup state to track x and y position (useState)
+  // Setup event to listen for mouse movementent
+  // Remove event listener if unmounted (useEffect)
 
   // This one will be used as ComponentDidUnmount
   useEffect(() => {
@@ -16,6 +22,9 @@ const Note = ({ note }) => {
     <div>
       <h3>{note.title}</h3>
       <p>{note.noteBody}</p>
+      <p>
+        {position.x}, {position.y}
+      </p>
       <button
         onClick={() => dispatch({ type: "REMOVE_NOTE", title: note.title })}
       >

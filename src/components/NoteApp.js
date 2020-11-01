@@ -4,12 +4,14 @@ import notesReducer from "../reducers/notes";
 import AddNoteForm from "./AddNoteForm";
 import NoteList from "./NoteList";
 import { NotesContext } from "../context/notes-context";
+import useMousePosition from "../hooks/useMousePosition";
 
 // A Hook is a function that lets you tap in to a React feature  like state or lifecycle  method.
 
 const NoteApp = () => {
   // const [notes, setNotes] = useState([]);
   const [notes, dispatch] = useReducer(notesReducer, []);
+  const position = useMousePosition();
 
   useEffect(() => {
     const notes = JSON.parse(localStorage.getItem("notes"));
@@ -28,7 +30,9 @@ const NoteApp = () => {
     <NotesContext.Provider value={{ notes, dispatch }}>
       <h1>Notes</h1>
       <NoteList />
-      <p>Add Note:</p>
+      <p>
+        Add Note: {position.x}-{position.y}
+      </p>
       <AddNoteForm />
     </NotesContext.Provider>
   );
